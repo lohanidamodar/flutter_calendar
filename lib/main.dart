@@ -25,10 +25,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   CalendarController _controller;
+  Map<DateTime,List<dynamic>> _events;
+  List<dynamic> _selectedEvents;
+  TextEditingController _eventController;
+  SharedPreferences prefs;
+
   @override
   void initState() {
     super.initState();
     _controller = CalendarController();
+    _eventController = TextEditingController();
+    _events = {};
+    _selectedEvents = [];
+    initPrefs();
+  }
+
+  initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _events = Map<DateTime,List<dynamic>>.from(decodeMap(json.decode(prefs.getString("events") ?? "{}")));
+    });
   }
   
   Map<String,dynamic> encodeMap(Map<DateTime,dynamic> map) {
@@ -58,6 +74,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TableCalendar(
+              events: _events,
               initialCalendarFormat: CalendarFormat.week,
               calendarStyle: CalendarStyle(
                 canEventMarkersOverflow: true,
@@ -78,7 +95,9 @@ class _HomePageState extends State<HomePage> {
               ),
               startingDayOfWeek: StartingDayOfWeek.monday,
               onDaySelected: (date, events) {
-
+                setState(() {
+                  _selectedEvents = events;
+                });
               },
               builders: CalendarBuilders(
                 selectedDayBuilder: (context, date, events) => Container(
@@ -103,10 +122,46 @@ class _HomePageState extends State<HomePage> {
                     )),
               ),
               calendarController: _controller,
-            )
+            ),
+            ..._selectedEvents.map((event) => ListTile(
+              title: Text(event),
+            )),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: _showAddDialog,
+      ),
+    );
+  }
+
+  _showAddDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: TextField(
+          controller: _eventController,
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("Save"),
+            onPressed: (){
+              if(_eventController.text.isEmpty) return;
+              setState(() {
+                if(_events[_controller.selectedDay] != null) {
+                  _events[_controller.selectedDay].add(_eventController.text);
+                }else{
+                  _events[_controller.selectedDay] = [_eventController.text];
+                }
+                prefs.setString("events", json.encode(encodeMap(_events)));
+                _eventController.clear();
+                Navigator.pop(context);
+              });
+            },
+          )
+        ],
+      )
     );
   }
 }
