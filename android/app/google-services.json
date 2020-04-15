@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "764409359135",
+    "firebase_url": "https://flutter-events-5c4ed.firebaseio.com",
+    "project_id": "flutter-events-5c4ed",
+    "storage_bucket": "flutter-events-5c4ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764409359135:android:6840880b0598afdf501e2a",
+        "android_client_info": {
+          "package_name": "com.popupbits.flutter_calendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "764409359135-1lc6bur7t5uv455m27o98rfj0c691u4q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_6y56_BbChM6HHHv7km1sHsFa_7nkFeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "764409359135-1lc6bur7t5uv455m27o98rfj0c691u4q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
