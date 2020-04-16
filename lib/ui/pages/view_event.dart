@@ -10,7 +10,7 @@ class EventDetailsPage extends StatelessWidget {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text('Note details'),
+        title: Text('Event details'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

@@ -33,7 +33,7 @@ class _AddEventPageState extends State<AddEventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.note != null ? "Edit Note" : "Add note"),
+        title: Text(widget.note != null ? "Edit Event" : "Add event"),
       ),
       key: _key,
       body: Form(
@@ -110,7 +110,7 @@ class _AddEventPageState extends State<AddEventPage> {
                                 await eventDBS.createItem(EventModel(
                                   title: _title.text,
                                   description: _description.text,
-                                  eventDate: DateTime.now()
+                                  eventDate: _eventDate
                                 ));
                               }
                               Navigator.pop(context);
