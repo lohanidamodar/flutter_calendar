@@ -1,7 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_calendar/res/event_firestore_service.dart';
+import 'package:flutter_calendar/ui/pages/add_event.dart';
+import 'package:flutter_calendar/ui/pages/view_event.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import 'model/event.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,6 +17,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: HomePage(),
+      routes: {
+        "add_event": (_) => AddEventPage(),
+      },
     );
   }
 }
@@ -27,41 +33,13 @@ class _HomePageState extends State<HomePage> {
   CalendarController _controller;
   Map<DateTime, List<dynamic>> _events;
   List<dynamic> _selectedEvents;
-  TextEditingController _eventController;
-  SharedPreferences prefs;
 
   @override
   void initState() {
     super.initState();
     _controller = CalendarController();
-    _eventController = TextEditingController();
     _events = {};
     _selectedEvents = [];
-    initPrefs();
-  }
-
-  initPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _events = Map<DateTime, List<dynamic>>.from(
-          decodeMap(json.decode(prefs.getString("events") ?? "{}")));
-    });
-  }
-
-  Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
-    Map<String, dynamic> newMap = {};
-    map.forEach((key, value) {
-      newMap[key.toString()] = map[key];
-    });
-    return newMap;
-  }
-
-  Map<DateTime, dynamic> decodeMap(Map<String, dynamic> map) {
-    Map<DateTime, dynamic> newMap = {};
-    map.forEach((key, value) {
-      newMap[DateTime.parse(key)] = map[key];
-    });
-    return newMap;
   }
 
   @override
@@ -125,47 +103,23 @@ class _HomePageState extends State<HomePage> {
               calendarController: _controller,
             ),
             ..._selectedEvents.map((event) => ListTile(
-                  title: Text(event),
+                  title: Text(event.title),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => EventDetailsPage(
+                                  event: event,
+                                )));
+                  },
                 )),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: _showAddDialog,
+        onPressed: () => Navigator.pushNamed(context, 'add_event'),
       ),
     );
-  }
-
-  _showAddDialog() async {
-    await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              content: TextField(
-                controller: _eventController,
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Save"),
-                  onPressed: () {
-                    if (_eventController.text.isEmpty) return;
-                    if (_events[_controller.selectedDay] != null) {
-                      _events[_controller.selectedDay]
-                          .add(_eventController.text);
-                    } else {
-                      _events[_controller.selectedDay] = [
-                        _eventController.text
-                      ];
-                    }
-                    prefs.setString("events", json.encode(encodeMap(_events)));
-                    _eventController.clear();
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            ));
-    setState(() {
-      _selectedEvents = _events[_controller.selectedDay];
-    });
   }
 }
