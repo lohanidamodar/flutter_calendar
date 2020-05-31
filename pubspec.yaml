@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   
-  firebase_helpers: ^0.1.0
+  firebase_helpers: ^0.1.8
   table_calendar: ^2.2.3
   cloud_firestore: ^0.13.5
 dev_dependencies:
