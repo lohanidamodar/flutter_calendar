@@ -100,12 +100,11 @@ class _AddEventPageState extends State<AddEventPage> {
                                 processing = true;
                               });
                               if(widget.note != null) {
-                                await eventDBS.updateItem(EventModel(
-                                  id: widget.note.id,
-                                  title: _title.text,
-                                  description: _description.text,
-                                  eventDate: widget.note.eventDate
-                                ));
+                                await eventDBS.updateData(widget.note.id,{
+                                  "title": _title.text,
+                                  "description": _description.text,
+                                  "event_date": widget.note.eventDate
+                                });
                               }else{
                                 await eventDBS.createItem(EventModel(
                                   title: _title.text,
