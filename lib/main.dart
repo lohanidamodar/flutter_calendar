@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar/res/event_firestore_service.dart';
 import 'package:flutter_calendar/ui/pages/add_event.dart';
@@ -6,7 +7,11 @@ import 'package:table_calendar/table_calendar.dart';
 
 import 'model/event.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
